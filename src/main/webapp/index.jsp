@@ -1,5 +1,5 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 
 <html lang="en">
@@ -44,11 +44,10 @@
             >
               Training Department offers variety of courses. Learner can be able
               to choose the time that matches their needs. For each course, the
-              user can choose Morning Session or Evening Session. It i€™s your
-              choice.Training Department will improve you to next level.
+              user can choose Morning Session or Evening Session. It's your choice.Training Department will improve you to next level.
             </p>
             <div>
-              <a href="<%=request.getContextPath()%>/new" class="btn btn-outline-light rounded-2 w-50 p-2 fs-5"
+              <a href="login.jsp" class="btn btn-outline-light rounded-2 w-50 p-2 fs-5"
                 >Register</a
               >
             </div>

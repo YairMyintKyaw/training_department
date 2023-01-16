@@ -27,6 +27,13 @@ public class CourseRegister {
 		this.price = price;
 		this.time = time;
 	}
+	
+	
+	public CourseRegister(String courseName, String time) {
+		super();
+		this.courseName = courseName;
+		this.time = time;
+	}
 	public int getId() {
 		return id;
 	}

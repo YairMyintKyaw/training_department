@@ -18,15 +18,10 @@ import com.trainingprogram.model.CourseRegister;
 @WebServlet("/")
 public class TrainingSessionServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private SelectedCourseDao courseDAO;
-	private TrainingSessionController  sessionController;
-
-    public TrainingSessionServlet() {
-        super();
-        courseDAO = new SelectedCourseDaoService();
-        sessionController=new TrainingSessionController(courseDAO);
-        
-    }
+	private SelectedCourseDao courseDAO = new SelectedCourseDaoService();;
+	private TrainingSessionController  sessionController =new TrainingSessionController(courseDAO);
+ 
+    
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     	String action = request.getServletPath();
 
@@ -36,11 +31,19 @@ public class TrainingSessionServlet extends HttpServlet {
 				sessionController.showNewForm(request, response);
 				break;
 			case "/insert":
-				sessionController.insertCourse(request, response);
+				sessionController.insertCourse(request,response);;
 				break;
-			
+			case "/register":
+				sessionController.registerForm(request, response);
+				break;
+			case "/home":
+				sessionController.goToHome(request, response);
+				break;
+			case "/enrolledCourse":
+				sessionController.showEnrolledCourse(request,response);
+				break;
 			default:
-				RequestDispatcher dispatcher = request.getRequestDispatcher("index.jsp");//calling index.jsp 
+				RequestDispatcher dispatcher = request.getRequestDispatcher("index.jsp");
 				dispatcher.forward(request, response);
 				break;
 			}

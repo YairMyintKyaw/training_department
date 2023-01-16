@@ -9,23 +9,20 @@ import java.util.List;
 
 import com.trainingprogram.model.Course;
 import com.trainingprogram.model.CourseRegister;
+import com.trainingprogram.model.RegisteredAccount;
 import com.trainingprogram.utils.EmailSendUtils;
 import com.trainingprogram.utils.JDBCUtils;
 import com.trainingprogram.utils.ReadSheetUtils;
 
 public class SelectedCourseDaoService implements SelectedCourseDao {
-	private static final String INSERT_CourseS_SQL = "INSERT INTO `training_department`.`registered_student` "
-			+ "(`s_name`, `s_email`, `registered_course`, `time`, `price`) VALUES "
-			+ "(?, ?, ?, ?, ?);";
 
-	private static final String SELECT_Course_BY_ID = "select * from registered_student where id =?";
 
 	@Override
 	public void insertCourse(CourseRegister Course) throws SQLException {
-		System.out.println(INSERT_CourseS_SQL);
 		// try-with-resource statement will auto close the connection.
 		try (Connection connection = JDBCUtils.getConnection();
-				PreparedStatement preparedStatement = connection.prepareStatement(INSERT_CourseS_SQL)) {
+			PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO `training_department`.`registered_student` "
+						+ "(`s_name`, `s_email`, `registered_course`, `time`, `price`) VALUES " + "(?, ?, ?, ?, ?);")) {
 			preparedStatement.setString(1, Course.getUserName());
 			preparedStatement.setString(2, Course.getEmailId());
 			preparedStatement.setString(3, Course.getCourseName());
@@ -33,8 +30,8 @@ public class SelectedCourseDaoService implements SelectedCourseDao {
 			preparedStatement.setDouble(5, Course.getPrice());
 			System.out.println(preparedStatement);
 			preparedStatement.executeUpdate();
-			new EmailSendUtils().SendEmail(Course.getEmailId(), Course.getCourseName()); // after inserted send mail to
-																							// particular users
+			new EmailSendUtils().SendEmail(Course); // after inserted send mail to
+													// particular users
 		} catch (SQLException exception) {
 			System.out.print(exception);
 		}
@@ -45,10 +42,10 @@ public class SelectedCourseDaoService implements SelectedCourseDao {
 		CourseRegister Course = null;
 		// Step 1: Establishing a Connection
 		try (Connection connection = JDBCUtils.getConnection();
-				// Step 2:Create a statement using connection object
-				PreparedStatement preparedStatement = connection.prepareStatement(SELECT_Course_BY_ID);) {
+			// Step 2:Create a statement using connection object
+			PreparedStatement preparedStatement = connection.prepareStatement("select * from registered_student where id =?");) {
 			preparedStatement.setLong(1, CourseId);
-			System.out.println(preparedStatement);
+
 			// Step 3: Execute the query or update query
 			ResultSet rs = preparedStatement.executeQuery();
 
@@ -95,5 +92,98 @@ public class SelectedCourseDaoService implements SelectedCourseDao {
 		}
 		return 0;
 	}
+
+	@Override
+	public String registerAccount(RegisteredAccount ra) throws SQLException {
+
+		Connection connection = JDBCUtils.getConnection();
+		//check if the mail is already exist
+		String sql1 = "Select * from `training_department`.`registered_account` where email=?";
+		PreparedStatement PsForMail = connection.prepareStatement(sql1);
+		PsForMail.setString(1, ra.getEmail());
+		ResultSet rs = PsForMail.executeQuery();
+		while(rs.next()) {
+			if(rs.getString("name")!=null) {
+				return "Mail Already Exists";
+			}
+		}
+		String sql2 = "INSERT INTO `training_department`.`registered_account` (`name`, `password`, `email`) VALUES (?, ?, ?)";
+		PreparedStatement ps = connection.prepareStatement(sql2);
+		ps.setString(1, ra.getName());
+		ps.setString(2, ra.getPassword());
+		ps.setString(3, ra.getEmail());
+		ps.executeUpdate();
+		return "Created account";
+	}
+
+	@Override
+	public Boolean checkPassword(String mail, String password) throws SQLException {
+		Boolean correctPassword = false;
+		Connection connection = JDBCUtils.getConnection();
+		String sql = "select password from registered_account where email=?";
+		PreparedStatement ps = connection.prepareStatement(sql);
+		ps.setString(1, mail);
+		ResultSet rs = ps.executeQuery();
+		
+		String pw=null;
+		while(rs.next()) {
+			pw = rs.getString("password");
+		}
+		if(pw!=null && pw.equals(password)) {
+			correctPassword=true;
+		}
+		
+		return correctPassword;
+	}
+
+	@Override
+	public RegisteredAccount getAccountInfo(String mail) throws SQLException {
+
+		Connection connection = JDBCUtils.getConnection();
+		String sql = "select name from registered_account where email=?";
+		PreparedStatement ps = connection.prepareStatement(sql);
+		ps.setString(1, mail);
+		ResultSet rs = ps.executeQuery();
+		String name=null;
+		while(rs.next()) {
+			name = rs.getString("name");
+		}
+		
+		RegisteredAccount ra = new RegisteredAccount(name, mail);
+		
+		return ra;
+		
+		
+	}
+
+	@Override
+	public List<CourseRegister> getEnrolledCourses(String mail) throws SQLException {
+		List<CourseRegister> courseList = new ArrayList<>();
+		
+		Connection connection = JDBCUtils.getConnection();
+		String sql = "select * from registered_student where s_email=?;";
+		PreparedStatement ps = connection.prepareStatement(sql);
+		
+		ps.setString(1, mail);
+		ResultSet rs = ps.executeQuery();
+		while(rs.next()) {
+			String courseName = rs.getString("registered_course");
+			String time = rs.getString("time");
+			CourseRegister course = new CourseRegister(courseName, time);
+			courseList.add(course);
+		}
+		
+		return courseList;
+		
+	}
+	
+	
+	
+	
+	
+	
+	
+
+	
 
 }

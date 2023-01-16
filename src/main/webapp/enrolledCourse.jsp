@@ -1,5 +1,6 @@
+<%@page import="java.util.List"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <%@page import="com.trainingprogram.model.CourseRegister"%>
 <html lang="en">
@@ -28,47 +29,36 @@
       <div class="row align-items-center" style="min-height: 80vh">
         <div class="col">
           <div class="text-center d-flex flex-column gap-5">
-            <% CourseRegister userInfo = (CourseRegister) request.getAttribute("Course"); %>
             <h1 class="display-5 fw-bold text-success">
-              Thanks for joining us <%-- <br> <span style="text-decoration-style: wavy;"><%= userInfo.getCourseName()%></span> --%>
+              Your Enrolled Courses
             </h1>
-            <p class="">
-              <span class="fs-3"
-                >Here is the summary of the course you have chosen</span
-              >
-              <br />
-              <span class="fs-4">
-              	You will have to take the course at <%= userInfo.getTime() %>
-               </span>
-            </p>
-            
+
             <div class="rounded p-3 overflow-hidden">
-            	<table class="table table-light">
-            		<tr>
-            			<th>Name</th>
-            			<th>Email</th>
-            			<th>Selected Course</th>
-            			<th>Schedule</th>
-            			<th>Cost</th>
-            		</tr>
-            		
-            		<tr>
-            			<td><%=  userInfo.getUserName()%></td>
-            			<td><%=  userInfo.getEmailId()%></td>
-            			<td><%=  userInfo.getCourseName()%></td>
-            			<td><%=  userInfo.getTime()%></td>
-            			<td><%=  userInfo.getPrice()%></td>
-            		</tr>
-            		
-            	</table>
+              <table class="table table-light table-hover">
+                <thead>
+                  <th>Course</th>
+                  <th>Time</th>
+                </thead>
+				<% List<CourseRegister> courseRegister = (List<CourseRegister>)request.getAttribute("registeredCourses"); 
+					for(CourseRegister i:courseRegister){
+						
+					
+				%>
+                <tr>
+                	<td><%= i.getCourseName() %></td>
+                	<td><%= i.getTime()%></td>
+                </tr>
+                <%
+                	}
+				%>
+              </table>
             </div>
-            
+
             <div>
-              <button class="btn btn-outline-light rounded-pill p-3"
-                >Go Back To Home Page</button
-              >
+              <button class="btn btn-outline-light rounded-pill p-3">
+                Go Back To Home Page
+              </button>
             </div>
-            
           </div>
         </div>
       </div>
@@ -79,7 +69,7 @@
     <script type="text/javascript">
     	const backBtn = document.querySelector("button");
     	btn.addEventListener("click",function(){
-    		history.back(3);
+    		history.back(1);
     	})
     	
     </script>

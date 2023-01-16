@@ -1,5 +1,5 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-	pageEncoding="ISO-8859-1"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
 <%@page import="java.util.List"%>
 <%@page import="com.trainingprogram.model.Course"%>
 <%@page import="java.lang.Math"%>
@@ -25,8 +25,7 @@
 	<!-- registeration section -->
 	<section class="container p-md-3 ">
 		<div
-			class="row align-items-center overflow-hidden  justify-content-lg-between justify-content-center "
-			style="">
+			class="row align-items-center overflow-hidden  justify-content-lg-between justify-content-center ">
 			<!-- register form -->
 			<div
 				class="col-12 col-md-8 col-lg-5 animate__animated animate__fadeInLeft mb-3 mb-lg-0">
@@ -35,16 +34,14 @@
 					<h3 class="text-center mb-4 fs-2">Registration Form</h3>
 					<form action="insert"
 						class="d-flex flex-column align-content-around ">
-						<div class="mb-3">
-							<label for="name" class="form-label">Name</label> <input
-								type="text" class="form-control" id="name" name="name"
-								placeholder="Ye Myint Kyaw" />
-						</div>
-						<div class="mb-3">
-							<label for="email" class="form-label">Email</label> <input
-								type="email" class="form-control" name="email" id="email"
-								placeholder="example@gmail.com" />
-						</div>
+						<input required type="hidden" class="form-control" id="name"
+							name="name" placeholder="Ye Myint Kyaw"
+							value=<%=request.getAttribute("name")%>> 
+						<input required
+							type="hidden" class="form-control" name="email" id="email"
+							placeholder="example@gmail.com" 
+							value=<%= request.getAttribute("email") %>>
+							
 						<div class="mb-3">
 							<label for="courses" class="form-label">Selected Course</label> <select
 								name="course" id="courses" class="form-select">
@@ -75,7 +72,7 @@
 								%>
 							</select>
 						</div>
-						<input type="submit"
+						<input required type="submit"
 							class="btn btn-outline-light fs-5 px-3 w-75 align-self-center shadow"
 							value="Register">
 
